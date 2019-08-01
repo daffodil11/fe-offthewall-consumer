@@ -23,6 +23,10 @@ android {
             resValue 'string', "maps_api_key", OffTheWall_mapsAPIkey
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
