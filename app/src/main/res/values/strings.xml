@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Off The Wall</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
