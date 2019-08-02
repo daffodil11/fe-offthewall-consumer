@@ -1,0 +1,6 @@
+query WallQuery {
+    fetchAllWalls {
+      latitude
+      longitude
+    }
+}
