@@ -8,7 +8,7 @@ import okhttp3.OkHttpClient;
 
 public class OffTheWallApplication extends Application {
     private static final String BASE_URL = "https://offthewall-teamslick.herokuapp.com/graphql";
-    private ApolloClient apolloClient;
+    private static ApolloClient apolloClient;
 
     @Override
     public void onCreate() {
@@ -21,7 +21,7 @@ public class OffTheWallApplication extends Application {
                 .build();
     }
 
-    public ApolloClient getApolloClient() {
+    public static ApolloClient getApolloClient() {
         return apolloClient;
     }
 }
