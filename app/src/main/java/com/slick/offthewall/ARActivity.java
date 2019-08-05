@@ -1,10 +1,15 @@
 package com.slick.offthewall;
 
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -28,6 +33,7 @@ public class ARActivity extends AppCompatActivity {
 
     private FragmentTransaction fragmentTransaction;
     private AugmentedArtFragment augmentedArtFragment;
+    private ImageView hintImageView;
 
     private static final String TAG = "ARActivity";
 
@@ -35,6 +41,13 @@ public class ARActivity extends AppCompatActivity {
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar);
+        Resources res = getResources();
+
+        hintImageView = findViewById(R.id.hint);
+        RoundedBitmapDrawable hintImage = RoundedBitmapDrawableFactory.create(res, BitmapFactory.decodeResource(res, R.drawable.t1));
+        hintImage.setCornerRadius(50.0f);
+        hintImageView.setImageDrawable(hintImage);
+
         currentLat = NC_LAT;
         currentLong = NC_LONG;
         FragmentManager fragmentManager = getSupportFragmentManager();
