@@ -60,7 +60,7 @@ public class ARActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NotNull ApolloException e) {
-
+                Log.e(TAG, "Could not get wall locations!");
             }
         });
     }
@@ -76,7 +76,7 @@ public class ARActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NotNull ApolloException e) {
-
+                Log.e(TAG, "Could not get data for closest wall!");
             }
         });
     }
