@@ -2,4 +2,8 @@
     <string name="app_name">Off The Wall</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_AR">AR</string>
+    <string name="tab_text_1">Welcome</string>
+    <string name="tab_text_2">Getting Started</string>
+    <string name="tab_text_3">Further Features</string>
+    <string name="tab_text_4">Credits</string>
 </resources>
