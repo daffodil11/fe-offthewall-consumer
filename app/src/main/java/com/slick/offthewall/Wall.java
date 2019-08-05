@@ -22,7 +22,7 @@ public class Wall {
         this.longitude = longitude;
     }
     
-    public int getDistanceFrom(double currentLat, double currentLong) {
+    public Integer getDistanceFrom(double currentLat, double currentLong) {
         final double psiOne = Math.toRadians(this.latitude);
         final double psiTwo = Math.toRadians(currentLat);
         final double deltaPsi = Math.toRadians(currentLat - this.latitude);
