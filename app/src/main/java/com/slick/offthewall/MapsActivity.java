@@ -6,10 +6,12 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.apollographql.apollo.ApolloCall;
@@ -27,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +38,7 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         OnMapReadyCallback {
 
+    private FloatingActionButton floatingCameraButton;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private OffTheWallApplication application;
@@ -44,13 +48,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         getLocationPermission();
         application = (OffTheWallApplication) getApplication();
+
+        floatingCameraButton = findViewById(R.id.floatingActionButton2);
+        floatingCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openARActivity();
+            }
+        });
     }
 
     private void getDeviceLocation() {
@@ -156,6 +167,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public boolean onMyLocationButtonClick() {
         // Return false so that we don't consume the event and the default behavior still occurs
         return false;
+    }
+
+    public void openARActivity() {
+        Intent ARIntent = new Intent(this, ARActivity.class);
+        startActivity(ARIntent);
     }
 
 
