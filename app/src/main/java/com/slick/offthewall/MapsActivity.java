@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.Task;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
 
@@ -121,7 +123,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 WallQuery.builder().build()).enqueue(new ApolloCall.Callback<WallQuery.Data>() {
             @Override
             public void onResponse(@NotNull Response<WallQuery.Data> response) {
-                Log.i(TAG, "response: " + response.data().fetchAllWalls());
+                List<WallQuery.FetchAllWall> walls = response.data().fetchAllWalls();
+                putMarkers(walls);
             }
 
             @Override
@@ -129,6 +132,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+    }
+
+    public void putMarkers(List<WallQuery.FetchAllWall> walls){
+        runOnUiThread(() -> walls.stream().forEach(wall -> mMap.addMarker(new MarkerOptions().position(new LatLng(wall.latitude, wall.longitude)))));
     }
 
     @Override
@@ -145,16 +152,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
         }
 
-        String coords = "53.792873,1.54074,#53.792484,-1.540424,#53.79199,-1.537232,#53.791128,-1.537358,#53.791984,-1.531389,#53.793244,-1.537609";
-        String[] coordsplit = coords.split("#");
-
-        for (String point : coordsplit) {
-            String[] pointData = point.split(",");
-            Float lat= Float.parseFloat(pointData[0]);
-            Float lng= Float.parseFloat(pointData[1]);
-
-            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
-        }
+//        String coords = "53.792873,1.54074,#53.792484,-1.540424,#53.79199,-1.537232,#53.791128,-1.537358,#53.791984,-1.531389,#53.793244,-1.537609";
+//        String[] coordsplit = coords.split("#");
+//
+//        for (String point : coordsplit) {
+//            String[] pointData = point.split(",");
+//            Float lat= Float.parseFloat(pointData[0]);
+//            Float lng= Float.parseFloat(pointData[1]);
+//
+//            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+//        }
 
 //        LatLng mylocation = new LatLng(53.794872, -1.547083);
 //        mMap.addMarker(new MarkerOptions().position(mylocation).title("Marker in Leeds").snippet("Art posted by me"));
