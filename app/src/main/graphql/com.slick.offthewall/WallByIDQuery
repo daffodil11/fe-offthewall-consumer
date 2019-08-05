@@ -1,0 +1,22 @@
+query WallByIDQuery ($wall_id: Int!) {
+  fetchWallById(wall_id: $wall_id) {
+    wall_id
+    latitude
+    longitude
+    street_address
+    info
+    canvas_width
+    canvas_height
+    trigger_width
+    trigger_height
+    trigger_offset_x
+    trigger_offset_y
+    images {
+      image_id
+      image_url
+      blurb
+      artist_id
+      created_at
+    }
+  }
+}
