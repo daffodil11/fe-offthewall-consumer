@@ -100,6 +100,10 @@ public class ARActivity extends AppCompatActivity {
                         );
                 List<Art> artworks = data.images.stream().map(image -> new Art(image.image_url, image.blurb, image.artist_id, new Date(Long.valueOf(image.created_at)))).collect(Collectors.toList());
                 wall.setWallArt(artworks);
+                Bundle bundle = new Bundle();
+                bundle.putInt("triggerId", Integer.valueOf(data.wall_id));
+                bundle.putFloat("triggerWidth", (float) data.trigger_width);
+                augmentedArtFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.placeholder, augmentedArtFragment);
                 fragmentTransaction.commit();
             }
