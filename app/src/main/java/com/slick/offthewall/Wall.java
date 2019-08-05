@@ -3,13 +3,15 @@ package com.slick.offthewall;
 public class Wall {
 
     private String[] imgUrls;
+    private String streetAddress;
+    private String info;
     private final int wallId;
-    /*private final float triggerWidth;
-    private final float triggerHeight;
-    private final float triggerOffsetX;
-    private final float triggerOffsetY;
-    private final float wallWidth;
-    private final float wallHeight;*/
+    private float triggerWidth;
+    private float triggerHeight;
+    private float triggerOffsetX;
+    private float triggerOffsetY;
+    private float canvasWidth;
+    private float canvasHeight;
     private final double latitude;
     private final double longitude;
     // private static final String TAG = "Wall";
@@ -35,5 +37,25 @@ public class Wall {
 
     public int getWallId() {
         return this.wallId;
+    }
+
+    public void setWallData (
+            String streetAddress,
+            String info,
+            float canvasWidth,
+            float canvasHeight,
+            float triggerWidth,
+            float triggerHeight,
+            float triggerOffsetX,
+            float triggerOffsetY
+    ) {
+        this.streetAddress = streetAddress;
+        this.info = info;
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        this.triggerWidth = triggerWidth;
+        this.triggerHeight = triggerHeight;
+        this.triggerOffsetX = triggerOffsetX;
+        this.triggerOffsetY = triggerOffsetY;
     }
 }
