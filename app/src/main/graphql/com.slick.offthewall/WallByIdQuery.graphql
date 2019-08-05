@@ -1,4 +1,4 @@
-query WallByIDQuery ($wall_id: Int!) {
+ query WallByIDQuery($wall_id: ID!) {
   fetchWallById(wall_id: $wall_id) {
     wall_id
     latitude
