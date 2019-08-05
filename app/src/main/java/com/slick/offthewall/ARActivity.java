@@ -2,8 +2,11 @@ package com.slick.offthewall;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
@@ -23,6 +26,9 @@ public class ARActivity extends AppCompatActivity {
     private static final double NC_LAT = 53.7949778;
     private static final double NC_LONG = -1.5449472;
 
+    private FragmentTransaction fragmentTransaction;
+    private AugmentedArtFragment augmentedArtFragment;
+
     private static final String TAG = "ARActivity";
 
     @Override
@@ -31,6 +37,15 @@ public class ARActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ar);
         currentLat = NC_LAT;
         currentLong = NC_LONG;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        /*FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+        );*/
+        augmentedArtFragment = new AugmentedArtFragment();
+        // augmentedArtFragment.setLayoutParams(lp);
+
         getClosestWall((OffTheWallApplication) getApplication());
     }
 
@@ -85,6 +100,8 @@ public class ARActivity extends AppCompatActivity {
                         );
                 List<Art> artworks = data.images.stream().map(image -> new Art(image.image_url, image.blurb, image.artist_id, new Date(Long.valueOf(image.created_at)))).collect(Collectors.toList());
                 wall.setWallArt(artworks);
+                fragmentTransaction.replace(R.id.placeholder, augmentedArtFragment);
+                fragmentTransaction.commit();
             }
 
             @Override
