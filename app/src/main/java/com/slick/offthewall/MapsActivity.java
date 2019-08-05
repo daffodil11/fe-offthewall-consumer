@@ -133,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
     public void putMarkers(List<WallQuery.FetchAllWall> walls){
-        runOnUiThread(() -> walls.stream().forEach(wall -> mMap.addMarker(new MarkerOptions().position(new LatLng(wall.latitude, wall.longitude)))));
+        runOnUiThread(() -> walls.stream().forEach(wall -> mMap.addMarker(new MarkerOptions().position(new LatLng(wall.latitude, wall.longitude)).title(wall.street_address).snippet(wall.info))));
     }
 
     @Override
