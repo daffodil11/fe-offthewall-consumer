@@ -9,18 +9,15 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,7 +32,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
+        OnMapReadyCallback {
 
 
     private FusedLocationProviderClient mFusedLocationClient;
@@ -150,22 +148,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return;
             }
             mMap.setMyLocationEnabled(true);
+            mMap.setOnMyLocationButtonClickListener(this);
         }
+    }
 
-//        String coords = "53.792873,1.54074,#53.792484,-1.540424,#53.79199,-1.537232,#53.791128,-1.537358,#53.791984,-1.531389,#53.793244,-1.537609";
-//        String[] coordsplit = coords.split("#");
-//
-//        for (String point : coordsplit) {
-//            String[] pointData = point.split(",");
-//            Float lat= Float.parseFloat(pointData[0]);
-//            Float lng= Float.parseFloat(pointData[1]);
-//
-//            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
-//        }
-
-//        LatLng mylocation = new LatLng(53.794872, -1.547083);
-//        mMap.addMarker(new MarkerOptions().position(mylocation).title("Marker in Leeds").snippet("Art posted by me"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 14));
+    @Override
+    public boolean onMyLocationButtonClick() {
+        // Return false so that we don't consume the event and the default behavior still occurs
+        return false;
     }
 
 
