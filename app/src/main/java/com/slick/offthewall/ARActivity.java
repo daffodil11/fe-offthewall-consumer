@@ -11,6 +11,7 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,7 +73,18 @@ public class ARActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Response<WallByIDQuery.Data> response) {
                 WallByIDQuery.FetchWallById data = response.data().fetchWallById();
-                Log.i(TAG, data.street_address);
+                wall.setWallData(
+                        data.street_address,
+                        data.info,
+                        (float) data.canvas_width,
+                        (float) data.canvas_height,
+                        (float) data.trigger_width,
+                        (float) data.trigger_height,
+                        (float) data.trigger_offset_x,
+                        (float) data.trigger_offset_y
+                        );
+                List<Art> artworks = data.images.stream().map(image -> new Art(image.image_url, image.blurb, image.artist_id, new Date(Long.valueOf(image.created_at)))).collect(Collectors.toList());
+                wall.setWallArt(artworks);
             }
 
             @Override

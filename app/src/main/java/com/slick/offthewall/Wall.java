@@ -1,8 +1,11 @@
 package com.slick.offthewall;
 
+import java.util.List;
+
 public class Wall {
 
     private String[] imgUrls;
+    private List<Art> artworks;
     private String streetAddress;
     private String info;
     private final int wallId;
@@ -57,5 +60,9 @@ public class Wall {
         this.triggerHeight = triggerHeight;
         this.triggerOffsetX = triggerOffsetX;
         this.triggerOffsetY = triggerOffsetY;
+    }
+
+    public void setWallArt (List<Art> artworks) {
+        this.artworks = artworks;
     }
 }
