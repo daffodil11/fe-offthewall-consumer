@@ -10,19 +10,19 @@ public class Wall {
     private final float triggerOffsetY;
     private final float wallWidth;
     private final float wallHeight;*/
-    private final float longitude;
-    private final float latitude;
+    private final double latitude;
+    private final double longitude;
     // private static final String TAG = "Wall";
 
     private static final int EARTH_RADIUS = 6371000;
 
-    public Wall (int wallID, float latitude, float longitude) {
+    public Wall (int wallID, double latitude, double longitude) {
         this.wallID = wallID;
         this.latitude = latitude;
         this.longitude = longitude;
     }
     
-    public int getDistanceFrom(float currentLat, float currentLong) {
+    public int getDistanceFrom(double currentLat, double currentLong) {
         final double psiOne = Math.toRadians(this.latitude);
         final double psiTwo = Math.toRadians(currentLat);
         final double deltaPsi = Math.toRadians(currentLat - this.latitude);
