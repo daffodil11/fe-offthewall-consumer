@@ -51,7 +51,7 @@ public class ARActivity extends AppCompatActivity {
                 )
                 .findFirst();
                 if (closestWallOptional.isPresent()) {
-                    launchAR(closestWallOptional.get());
+                    launchAR(application, closestWallOptional.get());
                 } else {
                     Log.e(TAG, "Closest wall could not be found");
                 }
@@ -65,8 +65,20 @@ public class ARActivity extends AppCompatActivity {
         });
     }
 
-    public void launchAR(Wall wall) {
+    public void launchAR(OffTheWallApplication application, Wall wall) {
+        application.getApolloClient().query(
+                WallByIDQuery.builder().wall_id(String.valueOf(wall.getWallId())).build()
+        ).enqueue(new ApolloCall.Callback<WallByIDQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<WallByIDQuery.Data> response) {
 
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+
+            }
+        });
     }
 
 }
