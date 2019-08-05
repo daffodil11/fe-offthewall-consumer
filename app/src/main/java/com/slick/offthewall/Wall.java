@@ -3,7 +3,7 @@ package com.slick.offthewall;
 public class Wall {
 
     private String[] imgUrls;
-    private final int wallID;
+    private final int wallId;
     /*private final float triggerWidth;
     private final float triggerHeight;
     private final float triggerOffsetX;
@@ -16,8 +16,8 @@ public class Wall {
 
     private static final int EARTH_RADIUS = 6371000;
 
-    public Wall (int wallID, double latitude, double longitude) {
-        this.wallID = wallID;
+    public Wall (int wallId, double latitude, double longitude) {
+        this.wallId = wallId;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -31,5 +31,9 @@ public class Wall {
         final double a = Math.pow(Math.sin(deltaPsi / 2), 2) + Math.cos(psiOne) * Math.cos(psiTwo) * Math.pow(Math.sin(deltaLambda / 2), 2);
         final double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return (int) Math.round(c * EARTH_RADIUS);
+    }
+
+    public int getWallId() {
+        return this.wallId;
     }
 }
