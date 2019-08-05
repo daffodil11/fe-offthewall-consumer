@@ -6,6 +6,11 @@
         android:id="@+id/placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/loading"/>
+        android:text="@string/loading"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textSize="48sp"
+        android:background="@color/colorAccent"
+        android:textColor="@color/colorPrimary"/>
 
 </FrameLayout>
