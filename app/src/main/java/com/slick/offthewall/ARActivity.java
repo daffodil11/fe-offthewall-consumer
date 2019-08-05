@@ -30,6 +30,7 @@ public class ARActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ar);
         currentLat = NC_LAT;
         currentLong = NC_LONG;
+        getClosestWall((OffTheWallApplication) getApplication());
     }
 
     public void getClosestWall(OffTheWallApplication application) {
@@ -50,10 +51,9 @@ public class ARActivity extends AppCompatActivity {
                 )
                 .findFirst();
                 if (closestWallOptional.isPresent()) {
-                    Wall closestWall = closestWallOptional.get();
-                    Log.i(TAG, "Success!!!");
+                    launchAR(closestWallOptional.get());
                 } else {
-                    Log.e(TAG, "Failure!!!");
+                    Log.e(TAG, "Closest wall could not be found");
                 }
 
             }
@@ -63,6 +63,10 @@ public class ARActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void launchAR(Wall wall) {
+
     }
 
 }
