@@ -3,27 +3,29 @@
     "queryType": {
       "name": "Query"
     },
-    "mutationType": null,
+    "mutationType": {
+      "name": "Mutation"
+    },
     "subscriptionType": null,
     "types": [
       {
         "kind": "OBJECT",
         "name": "Query",
-        "description": null,
+        "description": "",
         "fields": [
           {
-            "name": "fetchArtist",
-            "description": null,
+            "name": "fetchArtistById",
+            "description": "",
             "args": [
               {
                 "name": "artist_id",
-                "description": null,
+                "description": "",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "Int",
+                    "name": "ID",
                     "ofType": null
                   }
                 },
@@ -39,12 +41,28 @@
             "deprecationReason": null
           },
           {
+            "name": "fetchAllImages",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Image",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "fetchImagesByWallId",
-            "description": null,
+            "description": "",
             "args": [
               {
                 "name": "wall_id",
-                "description": null,
+                "description": "",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -71,7 +89,7 @@
           },
           {
             "name": "fetchAllWalls",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "LIST",
@@ -84,115 +102,29 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "SCALAR",
-        "name": "Int",
-        "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.",
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Artist",
-        "description": null,
-        "fields": [
+          },
           {
-            "name": "artist_id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
+            "name": "fetchWallById",
+            "description": "",
+            "args": [
+              {
+                "name": "wall_id",
+                "description": "",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
               }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "artist_username",
-            "description": null,
-            "args": [],
+            ],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "social_facebook",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "social_instagram",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "social_twitter",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "social_website",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "bio",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "kind": "OBJECT",
+              "name": "Wall",
               "ofType": null
             },
             "isDeprecated": false,
@@ -215,6 +147,109 @@
         "possibleTypes": null
       },
       {
+        "kind": "OBJECT",
+        "name": "Artist",
+        "description": "",
+        "fields": [
+          {
+            "name": "artist_id",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "artist_username",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "social_facebook",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "social_instagram",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "social_twitter",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "social_website",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "bio",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "SCALAR",
         "name": "String",
         "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
@@ -227,11 +262,11 @@
       {
         "kind": "OBJECT",
         "name": "Image",
-        "description": null,
+        "description": "",
         "fields": [
           {
             "name": "image_id",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -247,7 +282,7 @@
           },
           {
             "name": "image_url",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -263,7 +298,7 @@
           },
           {
             "name": "blurb",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -275,23 +310,19 @@
           },
           {
             "name": "wall_id",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "Wall",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "artist_id",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -307,7 +338,7 @@
           },
           {
             "name": "created_at",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -330,11 +361,11 @@
       {
         "kind": "OBJECT",
         "name": "Wall",
-        "description": null,
+        "description": "",
         "fields": [
           {
             "name": "wall_id",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -350,7 +381,7 @@
           },
           {
             "name": "canvas_url",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -366,7 +397,7 @@
           },
           {
             "name": "latitude",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -382,7 +413,7 @@
           },
           {
             "name": "longitude",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -398,7 +429,7 @@
           },
           {
             "name": "street_address",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -410,7 +441,7 @@
           },
           {
             "name": "info",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -422,7 +453,7 @@
           },
           {
             "name": "canvas_height",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -438,7 +469,7 @@
           },
           {
             "name": "canvas_width",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -454,7 +485,7 @@
           },
           {
             "name": "trigger_height",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -470,7 +501,7 @@
           },
           {
             "name": "trigger_width",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -486,7 +517,7 @@
           },
           {
             "name": "trigger_offset_x",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -502,7 +533,7 @@
           },
           {
             "name": "trigger_offset_y",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -518,7 +549,7 @@
           },
           {
             "name": "created_at",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -534,7 +565,7 @@
           },
           {
             "name": "images",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "LIST",
@@ -561,6 +592,96 @@
         "fields": null,
         "inputFields": null,
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Int",
+        "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Mutation",
+        "description": "",
+        "fields": [
+          {
+            "name": "addImage",
+            "description": "",
+            "args": [
+              {
+                "name": "image_url",
+                "description": "",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "blurb",
+                "description": "",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "wall_id",
+                "description": "",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "artist_id",
+                "description": "",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Image",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -1372,12 +1493,103 @@
       },
       {
         "kind": "OBJECT",
+        "name": "Comment",
+        "description": "",
+        "fields": [
+          {
+            "name": "comment_id",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "comment_body",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "image_id",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "consumer_id",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "created_at",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "Consumer",
-        "description": null,
+        "description": "",
         "fields": [
           {
             "name": "consumer_id",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1393,7 +1605,7 @@
           },
           {
             "name": "consumer_username",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -1409,7 +1621,7 @@
           },
           {
             "name": "bio",
-            "description": null,
+            "description": "",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -1426,98 +1638,71 @@
         "possibleTypes": null
       },
       {
-        "kind": "OBJECT",
-        "name": "Comment",
-        "description": null,
-        "fields": [
+        "kind": "ENUM",
+        "name": "CacheControlScope",
+        "description": "",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
           {
-            "name": "comment_id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
-            },
+            "name": "PUBLIC",
+            "description": "",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "comment_body",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "image_id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "consumer_id",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "created_at",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
+            "name": "PRIVATE",
+            "description": "",
             "isDeprecated": false,
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "Upload",
+        "description": "The `Upload` scalar type represents a file upload.",
+        "fields": null,
         "inputFields": null,
-        "interfaces": [],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       }
     ],
     "directives": [
+      {
+        "name": "cacheControl",
+        "description": "",
+        "locations": [
+          "FIELD_DEFINITION",
+          "OBJECT",
+          "INTERFACE"
+        ],
+        "args": [
+          {
+            "name": "maxAge",
+            "description": "",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "scope",
+            "description": "",
+            "type": {
+              "kind": "ENUM",
+              "name": "CacheControlScope",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ]
+      },
       {
         "name": "skip",
         "description": "Directs the executor to skip this field or fragment when the `if` argument is true.",
