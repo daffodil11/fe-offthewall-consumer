@@ -71,7 +71,8 @@ public class ARActivity extends AppCompatActivity {
         ).enqueue(new ApolloCall.Callback<WallByIDQuery.Data>() {
             @Override
             public void onResponse(@NotNull Response<WallByIDQuery.Data> response) {
-
+                WallByIDQuery.FetchWallById data = response.data().fetchWallById();
+                Log.i(TAG, data.street_address);
             }
 
             @Override
