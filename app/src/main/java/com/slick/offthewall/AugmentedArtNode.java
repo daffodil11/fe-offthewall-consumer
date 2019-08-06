@@ -2,8 +2,6 @@ package com.slick.offthewall;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.ar.core.AugmentedImage;
@@ -16,10 +14,7 @@ import com.google.ar.sceneform.rendering.MaterialFactory;
 import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -28,33 +23,34 @@ public class AugmentedArtNode extends AnchorNode {
 
     private static final String TAG = "AugmentedArtNode";
 
-    private final Wall wall;
+    private Context context;
     private static List<CompletableFuture<Material>> materialFutures;
     private static List<Material> materials;
     private Bitmap[] artworks = null;
 
     private int activeImage = 0;
 
-    public AugmentedArtNode(Context context, Wall wall) {
-        this.wall = wall;
-        materialFutures = wall.getArtBitmaps(context.getAssets()).stream().map(bitmap -> {
-           return Texture
-                   .builder()
-                   .setSource(bitmap)
-                   .build()
-                   .thenCompose(texture -> MaterialFactory.makeTransparentWithTexture(context, texture));
+    public AugmentedArtNode(Context context) {
+        this.context = context;
+    }
+
+    public void setArt(Bitmap[] bitmaps) {
+        materialFutures = Arrays.stream(bitmaps).map(bitmap -> {
+            return Texture
+                    .builder()
+                    .setSource(bitmap)
+                    .build()
+                    .thenCompose(texture -> MaterialFactory.makeTransparentWithTexture(context, texture));
         }).collect(Collectors.toList());
     }
 
-
-
-    public void setImage(AugmentedImage image) {
-        final float triggerWidth = this.wall.getTriggerWidth();
-        final float triggerHeight = this.wall.getTriggerHeight();
-        final float triggerOffsetX = this.wall.getTriggerOffsetX();
-        final float triggerOffsetY = this.wall.getTriggerOffsetY();
-        final float canvasWidth = this.wall.getCanvasWidth();
-        final float canvasHeight = this.wall.getCanvasHeight();
+    public void setImage(AugmentedImage image, Wall wall) {
+        final float triggerWidth = wall.getTriggerWidth();
+        final float triggerHeight = wall.getTriggerHeight();
+        final float triggerOffsetX = wall.getTriggerOffsetX();
+        final float triggerOffsetY = wall.getTriggerOffsetY();
+        final float canvasWidth = wall.getCanvasWidth();
+        final float canvasHeight = wall.getCanvasHeight();
 
         final float artLocationX = -(triggerOffsetX + (triggerWidth / 2)) + (canvasWidth / 2);
         final float artLocationY = -(triggerOffsetY + (triggerHeight / 2)) + (canvasHeight / 2);
@@ -75,7 +71,7 @@ public class AugmentedArtNode extends AnchorNode {
 
         if (materialFutures.stream().anyMatch(future -> !future.isDone())) {
             CompletableFuture.allOf(materialFutures.toArray(new CompletableFuture[materialFutures.size()]))
-                    .thenAccept((Void theVoid) -> setImage(image))
+                    .thenAccept((Void theVoid) -> setImage(image, wall))
                     .exceptionally(throwable -> {
                         Log.e(TAG, "Exception loading artworks", throwable);
                         return null;

@@ -100,10 +100,9 @@ public class ARActivity extends AppCompatActivity {
                 setFrameListener();
             }
         });
+        artNode = new AugmentedArtNode(this);
 
         getLocationPermission();
-
-        // getClosestWall();
     }
 
     private void getLocationPermission() {
@@ -263,8 +262,7 @@ public class ARActivity extends AppCompatActivity {
                 case TRACKING:
                     // Add node if this is a newly discovered trigger.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
-                        artNode = new AugmentedArtNode(this, closestWall);
-                        artNode.setImage(augmentedImage);
+                        artNode.setImage(augmentedImage, closestWall);
                         augmentedImageMap.put(augmentedImage, artNode);
                         augmentedArtFragment.getArSceneView().getScene().addChild(artNode);
                     }
@@ -301,13 +299,7 @@ public class ARActivity extends AppCompatActivity {
 
         protected void onPostExecute(Bitmap[] result) {
             Log.i(TAG, "Completed DownloadImagesTask");
-            for (int i = 0; i < result.length; i++) {
-                if (result[i] != null) {
-                    Log.i(TAG, "Successfully completed DownloadImagesTask!");
-                } else {
-                    Log.i(TAG, "Failed to complete DownloadImagesTask!");
-                }
-            }
+            artNode.setArt(result);
         }
     }
 }
