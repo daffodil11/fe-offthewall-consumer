@@ -31,11 +31,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.ar.core.AugmentedImage;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -54,6 +57,8 @@ public class ARActivity extends AppCompatActivity {
 
     private static final String TAG = "ARActivity";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+
+    private final Map<AugmentedImage, AugmentedArtNode> augmentedImageMap = new HashMap<>();
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {

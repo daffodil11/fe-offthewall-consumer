@@ -2,6 +2,9 @@ package com.slick.offthewall;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +15,13 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.google.ar.core.AugmentedImageDatabase;
 import com.google.ar.core.Config;
 import com.google.ar.core.Session;
 import com.google.ar.sceneform.ux.ArFragment;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class AugmentedArtFragment extends ArFragment {
 
@@ -22,6 +29,7 @@ public class AugmentedArtFragment extends ArFragment {
     private static final double MIN_OPENGL_VERSION = 3.0;
 
     private int triggerId;
+    private String triggerFile;
     private float triggerWidth;
 
     @Override
@@ -47,6 +55,7 @@ public class AugmentedArtFragment extends ArFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         triggerId = this.getArguments().getInt("triggerId");
+        triggerFile = triggerId + ".jpg";
         triggerWidth = this.getArguments().getFloat("triggerWidth");
 
         getPlaneDiscoveryController().hide();
@@ -69,6 +78,33 @@ public class AugmentedArtFragment extends ArFragment {
     }
 
     private boolean setupAugmentedImageDatabase(Config config, Session session) {
-        return false;
+        AugmentedImageDatabase augmentedImageDatabase;
+
+        AssetManager am = getContext() != null ? getContext().getAssets() : null;
+        if (am == null) {
+            Log.e(TAG, "Could not get AssetManager. Augmented Image Database not initialised.");
+            return false;
+        }
+
+        Bitmap triggerBitmap = loadAugmentedImageBitmap(am);
+        if (triggerBitmap == null) {
+            return false;
+        }
+
+        augmentedImageDatabase = new AugmentedImageDatabase(session);
+        augmentedImageDatabase.addImage(triggerFile, triggerBitmap, triggerWidth);
+
+        config.setAugmentedImageDatabase(augmentedImageDatabase);
+
+        return true;
+    }
+
+    private Bitmap loadAugmentedImageBitmap(AssetManager am) {
+        try (InputStream is = am.open(triggerFile)) {
+            return BitmapFactory.decodeStream(is);
+        } catch (IOException e) {
+            Log.e(TAG, "IOException loading trigger image bitmap", e);
+            return null;
+        }
     }
 }
