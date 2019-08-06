@@ -13,6 +13,7 @@ import com.google.ar.sceneform.rendering.Material;
 import com.google.ar.sceneform.rendering.MaterialFactory;
 import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
+import com.google.ar.sceneform.rendering.ViewRenderable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,6 +61,8 @@ public class AugmentedArtNode extends AnchorNode {
         setAnchor(image.createAnchor(image.getCenterPose()));
 
         Vector3 localPosition = new Vector3(artLocationX, 0.0f, artLocationY);
+        final Vector3 rightButtonOffset = new Vector3(-(canvasWidth / 2.0f), 0.0f, -0.15f);
+
         Node artNode;
         artNode = new Node();
         artNode.setParent(this);
@@ -93,6 +96,16 @@ public class AugmentedArtNode extends AnchorNode {
             }
             artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
         }
+
+        Node rightButtonNode = new Node();
+        rightButtonNode.setParent(artNode);
+        rightButtonNode.setLocalPosition(rightButtonOffset);
+        ViewRenderable.builder()
+                .setView(this.context, R.layout.button_right)
+                .setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER)
+                .setHorizontalAlignment(ViewRenderable.HorizontalAlignment.CENTER)
+                .build();
+
         return true;
     }
 
