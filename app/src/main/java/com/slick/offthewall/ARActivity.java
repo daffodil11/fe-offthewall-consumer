@@ -32,9 +32,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.ar.core.AugmentedImage;
+import com.google.ar.core.Frame;
+import com.google.ar.sceneform.FrameTime;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +57,7 @@ public class ARActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationClient;
     private OffTheWallApplication application;
     private Resources res;
+    private Wall closestWall;
 
     private static final String TAG = "ARActivity";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -69,7 +73,7 @@ public class ARActivity extends AppCompatActivity {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         hintImageView = findViewById(R.id.hint);
-
+        closestWall = null;
 
         floatingMapButton = findViewById(R.id.map_button);
         Intent mapIntent = new Intent(this, MapsActivity.class);
@@ -177,6 +181,7 @@ public class ARActivity extends AppCompatActivity {
                         );
                 List<Art> artworks = data.images.stream().map(image -> new Art(image.image_url, image.blurb, image.artist_id, new Date(Long.valueOf(image.created_at)))).collect(Collectors.toList());
                 wall.setWallArt(artworks);
+                closestWall = wall;
                 Bundle bundle = new Bundle();
                 bundle.putInt("triggerId", Integer.valueOf(data.wall_id));
                 bundle.putFloat("triggerWidth", (float) data.trigger_width);
@@ -203,4 +208,34 @@ public class ARActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Registered with the Sceneform Scene object, this method is called at the start of each frame.
+     *
+     * @param frameTime - time since last frame.
+     */
+    private void onUpdateFrame(FrameTime frameTime) {
+        Frame frame = augmentedArtFragment.getArSceneView().getArFrame();
+
+        if (frame == null) {
+            return;
+        }
+
+        Collection<AugmentedImage> updatedAugmentedImages = frame.getUpdatedTrackables(AugmentedImage.class);
+
+        for (AugmentedImage augmentedImage : updatedAugmentedImages) {
+            switch (augmentedImage.getTrackingState()) {
+                case PAUSED:
+                    // Detected but not yet tracked.
+                    break;
+                case TRACKING:
+                    if (!augmentedImageMap.containsKey(augmentedImage)) {
+                        AugmentedArtNode node = new AugmentedArtNode(this, closestWall);
+                    }
+                    break;
+                case STOPPED:
+                    augmentedImageMap.remove(augmentedImage);
+                    break;
+            }
+        }
+    }
 }
