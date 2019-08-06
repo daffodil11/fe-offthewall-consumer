@@ -45,8 +45,13 @@ public class ARActivity extends AppCompatActivity {
 
         hintImageView = findViewById(R.id.hint);
         RoundedBitmapDrawable hintImage = RoundedBitmapDrawableFactory.create(res, BitmapFactory.decodeResource(res, R.drawable.t1));
-        hintImage.setCornerRadius(50.0f);
-        hintImageView.setImageDrawable(hintImage);
+        hintImageView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            int diameter = hintImageView.getWidth() + 50;
+            Log.i(TAG, String.valueOf(diameter));
+            hintImage.setCornerRadius(diameter / 2.0f);
+            hintImageView.setImageDrawable(hintImage);
+        });
+
 
         currentLat = NC_LAT;
         currentLong = NC_LONG;
