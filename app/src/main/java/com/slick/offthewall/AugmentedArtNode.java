@@ -24,9 +24,8 @@ public class AugmentedArtNode extends AnchorNode {
     private static final String TAG = "AugmentedArtNode";
 
     private Context context;
-    private static List<CompletableFuture<Material>> materialFutures;
+    private static List<CompletableFuture<Material>> materialFutures = null;
     private static List<Material> materials;
-    private Bitmap[] artworks = null;
 
     private int activeImage = 0;
 
@@ -40,11 +39,14 @@ public class AugmentedArtNode extends AnchorNode {
                     .builder()
                     .setSource(bitmap)
                     .build()
-                    .thenCompose(texture -> MaterialFactory.makeTransparentWithTexture(context, texture));
+                    .thenCompose(texture -> MaterialFactory.makeTransparentWithTexture(this.context, texture));
         }).collect(Collectors.toList());
     }
 
-    public void setImage(AugmentedImage image, Wall wall) {
+    public boolean setImage(AugmentedImage image, Wall wall) {
+        if (materialFutures == null) {
+            return false;
+        }
         final float triggerWidth = wall.getTriggerWidth();
         final float triggerHeight = wall.getTriggerHeight();
         final float triggerOffsetX = wall.getTriggerOffsetX();
@@ -91,6 +93,7 @@ public class AugmentedArtNode extends AnchorNode {
             }
             artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
         }
+        return true;
     }
 
 }

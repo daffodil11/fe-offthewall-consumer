@@ -262,9 +262,10 @@ public class ARActivity extends AppCompatActivity {
                 case TRACKING:
                     // Add node if this is a newly discovered trigger.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
-                        artNode.setImage(augmentedImage, closestWall);
-                        augmentedImageMap.put(augmentedImage, artNode);
-                        augmentedArtFragment.getArSceneView().getScene().addChild(artNode);
+                        if (artNode.setImage(augmentedImage, closestWall)) {
+                            augmentedImageMap.put(augmentedImage, artNode);
+                            augmentedArtFragment.getArSceneView().getScene().addChild(artNode);
+                        }
                     }
                     break;
                 case STOPPED:
@@ -299,6 +300,7 @@ public class ARActivity extends AppCompatActivity {
 
         protected void onPostExecute(Bitmap[] result) {
             Log.i(TAG, "Completed DownloadImagesTask");
+            // setFrameListener(ORIGIN_AUGMENTED_ART_NODE);
             artNode.setArt(result);
         }
     }
