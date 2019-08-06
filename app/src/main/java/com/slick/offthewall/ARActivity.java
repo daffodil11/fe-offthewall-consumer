@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +39,12 @@ import com.google.ar.sceneform.FrameTime;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,6 +66,7 @@ public class ARActivity extends AppCompatActivity {
     private OffTheWallApplication application;
     private Resources res;
     private Wall closestWall;
+    private AugmentedArtNode artNode;
 
     private static final String TAG = "ARActivity";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -188,6 +197,18 @@ public class ARActivity extends AppCompatActivity {
                         );
                 List<Art> artworks = data.images.stream().map(image -> new Art(image.image_url, image.blurb, image.artist_id, new Date(Long.valueOf(image.created_at)))).collect(Collectors.toList());
                 wall.setWallArt(artworks);
+
+                List<URL> urlList = artworks.stream().map(artwork -> {
+                    try {
+                        return new URL(artwork.getUrl());
+                    } catch (MalformedURLException e) {
+                        Log.e(TAG, "Bad artwork URL", e);
+                        return null;
+                    }
+                }).collect(Collectors.toList());
+                URL[] urls = urlList.toArray(new URL[urlList.size()]);
+                new DownloadImagesTask().execute(urls);
+
                 closestWall = wall;
                 Bundle bundle = new Bundle();
                 bundle.putInt("triggerId", Integer.valueOf(data.wall_id));
@@ -242,16 +263,50 @@ public class ARActivity extends AppCompatActivity {
                 case TRACKING:
                     // Add node if this is a newly discovered trigger.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
-                        AugmentedArtNode node = new AugmentedArtNode(this, closestWall);
-                        node.setImage(augmentedImage);
-                        augmentedImageMap.put(augmentedImage, node);
-                        augmentedArtFragment.getArSceneView().getScene().addChild(node);
+                        artNode = new AugmentedArtNode(this, closestWall);
+                        artNode.setImage(augmentedImage);
+                        augmentedImageMap.put(augmentedImage, artNode);
+                        augmentedArtFragment.getArSceneView().getScene().addChild(artNode);
                     }
                     break;
                 case STOPPED:
                     // Drop the trigger from the map if it is no longer being tracked.
                     augmentedImageMap.remove(augmentedImage);
                     break;
+            }
+        }
+    }
+
+    private class DownloadImagesTask extends AsyncTask<URL[], Integer, Bitmap[]> {
+        protected Bitmap[] doInBackground(URL[]... urlArrays) {
+            URL[] urls = urlArrays[0];
+            Bitmap[] bitmaps = new Bitmap[urls.length];
+            for (int i = 0; i < urls.length; i++) {
+                try {
+                    HttpURLConnection connection = (HttpURLConnection) urls[i].openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    Bitmap bitmap = BitmapFactory.decodeStream(input);
+                    connection.disconnect();
+                    input.close();
+                    bitmaps[i] = bitmap;
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to load bitmap in background", e);
+                    return null;
+                }
+            }
+            return bitmaps;
+        }
+
+        protected void onPostExecute(Bitmap[] result) {
+            Log.i(TAG, "Completed DownloadImagesTask");
+            for (int i = 0; i < result.length; i++) {
+                if (result[i] != null) {
+                    Log.i(TAG, "Successfully completed DownloadImagesTask!");
+                } else {
+                    Log.i(TAG, "Failed to complete DownloadImagesTask!");
+                }
             }
         }
     }

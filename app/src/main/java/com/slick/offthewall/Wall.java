@@ -6,7 +6,10 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,15 +98,33 @@ public class Wall {
         }).collect(Collectors.toList());
     }*/
 
+    public List<URL> getArtUrls () {
+        return this.artworks.stream().map(artwork -> {
+            try {
+                return new URL(artwork.getUrl());
+            } catch (MalformedURLException e) {
+                Log.e(TAG, "Bad artwork URL", e);
+                return null;
+            }
+        }).collect(Collectors.toList());
+    }
+
     public List<Bitmap> getArtBitmaps (AssetManager am) {
         String[] placeholders = new String[]{"raven_nc.png", "sunmoondance_nc.png"};
         return Arrays.stream(placeholders).map(art -> {
+            InputStream is = null;
             try {
-                InputStream is = am.open(art);
+                is = am.open(art);
                 return BitmapFactory.decodeStream(is);
             } catch (Exception e) {
                 Log.e(TAG, "Bad artwork URL.", e);
                 return null;
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException ignored) {}
+                }
             }
         }).collect(Collectors.toList());
     }

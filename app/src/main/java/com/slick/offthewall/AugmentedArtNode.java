@@ -1,6 +1,9 @@
 package com.slick.offthewall;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.ar.core.AugmentedImage;
@@ -13,6 +16,10 @@ import com.google.ar.sceneform.rendering.MaterialFactory;
 import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -24,6 +31,7 @@ public class AugmentedArtNode extends AnchorNode {
     private final Wall wall;
     private static List<CompletableFuture<Material>> materialFutures;
     private static List<Material> materials;
+    private Bitmap[] artworks = null;
 
     private int activeImage = 0;
 
@@ -37,6 +45,8 @@ public class AugmentedArtNode extends AnchorNode {
                    .thenCompose(texture -> MaterialFactory.makeTransparentWithTexture(context, texture));
         }).collect(Collectors.toList());
     }
+
+
 
     public void setImage(AugmentedImage image) {
         final float triggerWidth = this.wall.getTriggerWidth();
