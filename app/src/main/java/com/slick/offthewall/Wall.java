@@ -1,12 +1,14 @@
 package com.slick.offthewall;
 
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import java.net.URL;
+import java.io.File;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class Wall {
@@ -74,17 +76,36 @@ public class Wall {
         this.artworks = artworks;
     }
 
-    public List<CompletableFuture<Bitmap>> getArtBitmaps () {
-        return this.artworks.stream().map(art -> CompletableFuture.supplyAsync(() -> {
-                try {
-                    URL url = new URL(art.getUrl());
-                    return BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                } catch (Exception e) {
-                    Log.e(TAG, "Bad artwork URL.", e);
-                    return null;
-                }
-            })
-        ).collect(Collectors.toList());
+    /*public List<Bitmap> getArtBitmaps () {
+        return this.artworks.stream().map(art -> {
+            try {
+                URL url = new URL(art.getUrl());
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(input);
+                connection.disconnect();
+                input.close();
+                return bitmap;
+            } catch (Exception e) {
+                Log.e(TAG, "Bad artwork URL.", e);
+                return null;
+            }
+        }).collect(Collectors.toList());
+    }*/
+
+    public List<Bitmap> getArtBitmaps (AssetManager am) {
+        String[] placeholders = new String[]{"raven_nc.png", "sunmoondance_nc.png"};
+        return Arrays.stream(placeholders).map(art -> {
+            try {
+                InputStream is = am.open(art);
+                return BitmapFactory.decodeStream(is);
+            } catch (Exception e) {
+                Log.e(TAG, "Bad artwork URL.", e);
+                return null;
+            }
+        }).collect(Collectors.toList());
     }
 
     public float getTriggerWidth() {

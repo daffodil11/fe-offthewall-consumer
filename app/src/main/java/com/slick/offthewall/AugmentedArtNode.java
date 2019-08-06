@@ -29,14 +29,12 @@ public class AugmentedArtNode extends AnchorNode {
 
     public AugmentedArtNode(Context context, Wall wall) {
         this.wall = wall;
-        materialFutures = wall.getArtBitmaps().stream().map(futureBitmap -> {
-           return futureBitmap.thenCompose(bitmap -> {
-               return Texture
-                       .builder()
-                       .setSource(bitmap)
-                       .build()
-                       .thenCompose(texture -> MaterialFactory.makeTransparentWithTexture(context, texture));
-           });
+        materialFutures = wall.getArtBitmaps(context.getAssets()).stream().map(bitmap -> {
+           return Texture
+                   .builder()
+                   .setSource(bitmap)
+                   .build()
+                   .thenCompose(texture -> MaterialFactory.makeTransparentWithTexture(context, texture));
         }).collect(Collectors.toList());
     }
 
@@ -50,6 +48,8 @@ public class AugmentedArtNode extends AnchorNode {
 
         final float artLocationX = -(triggerOffsetX + (triggerWidth / 2)) + (canvasWidth / 2);
         final float artLocationY = -(triggerOffsetY + (triggerHeight / 2)) + (canvasHeight / 2);
+
+        setAnchor(image.createAnchor(image.getCenterPose()));
 
         Vector3 localPosition = new Vector3(artLocationX, 0.0f, artLocationY);
         Node artNode;
@@ -75,6 +75,7 @@ public class AugmentedArtNode extends AnchorNode {
                 materials = materialFutures.stream()
                         .map(future -> future.join())
                         .map(material -> {
+                            Log.i(TAG, "Successfully made materials!");
                             material.setFloat(MaterialFactory.MATERIAL_REFLECTANCE, 0.0f);
                             material.setFloat(MaterialFactory.MATERIAL_ROUGHNESS, 0.8f);
                             material.setFloat(MaterialFactory.MATERIAL_METALLIC, 0.0f);
