@@ -15,4 +15,8 @@ public class Art {
         this.artistId = artistId;
         this.createdAt = createdAt;
     }
+
+    public String getUrl() {
+        return this.url;
+    }
 }
