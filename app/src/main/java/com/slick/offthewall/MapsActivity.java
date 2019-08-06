@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
     private FloatingActionButton floatingCameraButton;
 
@@ -160,6 +161,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
+            mMap.setOnMarkerClickListener(this);
+            mMap.setOnMapClickListener(this);
         }
     }
 
@@ -174,5 +177,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         startActivity(ARIntent);
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        floatingCameraButton.hide();
+        return false;
+    }
 
+    @Override
+    public void onMapClick(LatLng latLng) {
+        floatingCameraButton.show();
+    }
 }
