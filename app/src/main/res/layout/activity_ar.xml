@@ -20,6 +20,7 @@
     
     <ImageView
         android:id="@+id/hint"
+        android:visibility="invisible"
         android:layout_width="@dimen/hint_image_size"
         android:layout_height="@dimen/hint_image_size"
         android:layout_alignParentBottom="true"

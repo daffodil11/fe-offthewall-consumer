@@ -1,15 +1,22 @@
 package com.slick.offthewall;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.FragmentManager;
@@ -18,6 +25,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,8 +41,6 @@ import java.util.stream.Collectors;
 
 public class ARActivity extends AppCompatActivity {
 
-    private double currentLat;
-    private double currentLong;
     private static final double NC_LAT = 53.7949778;
     private static final double NC_LONG = -1.5449472;
 
@@ -38,23 +48,23 @@ public class ARActivity extends AppCompatActivity {
     private AugmentedArtFragment augmentedArtFragment;
     private ImageView hintImageView;
     private FloatingActionButton floatingMapButton;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private OffTheWallApplication application;
+    private Resources res;
 
     private static final String TAG = "ARActivity";
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar);
-        Resources res = getResources();
+        res = getResources();
+        application = (OffTheWallApplication) getApplication();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         hintImageView = findViewById(R.id.hint);
-        RoundedBitmapDrawable hintImage = RoundedBitmapDrawableFactory.create(res, BitmapFactory.decodeResource(res, R.drawable.t1));
-        hintImageView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            int diameter = hintImageView.getWidth();
-            Log.i(TAG, String.valueOf(diameter));
-            hintImage.setCornerRadius((float) diameter);
-            hintImageView.setImageDrawable(hintImage);
-        });
+
 
         floatingMapButton = findViewById(R.id.map_button);
         Intent mapIntent = new Intent(this, MapsActivity.class);
@@ -62,21 +72,56 @@ public class ARActivity extends AppCompatActivity {
                 startActivity(mapIntent);
         });
 
-        currentLat = NC_LAT;
-        currentLong = NC_LONG;
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        /*FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-        );*/
         augmentedArtFragment = new AugmentedArtFragment();
-        // augmentedArtFragment.setLayoutParams(lp);
 
-        getClosestWall((OffTheWallApplication) getApplication());
+        getLocationPermission();
+
+        // getClosestWall();
     }
 
-    public void getClosestWall(OffTheWallApplication application) {
+    private void getLocationPermission() {
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getDeviceLocation();
+        } else {
+            ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE:{
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getDeviceLocation();
+                }
+            }
+        }
+    }
+
+    private void getDeviceLocation() {
+        try{
+            Task location = mFusedLocationClient.getLastLocation();
+            location.addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: found location!");
+                    Location currentLocation = (Location) task.getResult();
+                    getClosestWall(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    // getClosestWall(53.371440, -1.523465);
+                } else {
+                    Log.d(TAG, "onComplete: current location is null");
+                    Toast.makeText(ARActivity.this, "Unable to get current location", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (SecurityException e) {
+            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
+        }
+    }
+
+    public void getClosestWall(double currentLat, double currentLong) {
         application.getApolloClient().query(
                 WallLocationsQuery.builder().build()
         ).enqueue(new ApolloCall.Callback<WallLocationsQuery.Data>() {
@@ -94,7 +139,7 @@ public class ARActivity extends AppCompatActivity {
                 )
                 .findFirst();
                 if (closestWallOptional.isPresent()) {
-                    launchAR(application, closestWallOptional.get());
+                    launchAR(closestWallOptional.get());
                 } else {
                     Log.e(TAG, "Closest wall could not be found");
                 }
@@ -108,7 +153,7 @@ public class ARActivity extends AppCompatActivity {
         });
     }
 
-    public void launchAR(OffTheWallApplication application, Wall wall) {
+    public void launchAR(Wall wall) {
         application.getApolloClient().query(
                 WallByIDQuery.builder().wall_id(String.valueOf(wall.getWallId())).build()
         ).enqueue(new ApolloCall.Callback<WallByIDQuery.Data>() {
@@ -133,6 +178,17 @@ public class ARActivity extends AppCompatActivity {
                 augmentedArtFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.placeholder, augmentedArtFragment);
                 fragmentTransaction.commit();
+
+                String resource = "t" + wall.getWallId();
+                int id = res.getIdentifier(resource, "drawable", "com.slick.offthewall");
+                RoundedBitmapDrawable hintImage = RoundedBitmapDrawableFactory.create(res, BitmapFactory.decodeResource(res, id));
+                hintImageView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                    int diameter = hintImageView.getWidth();
+                    Log.i(TAG, String.valueOf(diameter));
+                    hintImage.setCornerRadius((float) diameter);
+                    hintImageView.setImageDrawable(hintImage);
+                    hintImageView.setVisibility(ImageView.VISIBLE);
+                });
             }
 
             @Override
