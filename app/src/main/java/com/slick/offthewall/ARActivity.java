@@ -1,9 +1,11 @@
 package com.slick.offthewall;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -16,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +37,7 @@ public class ARActivity extends AppCompatActivity {
     private FragmentTransaction fragmentTransaction;
     private AugmentedArtFragment augmentedArtFragment;
     private ImageView hintImageView;
+    private FloatingActionButton floatingMapButton;
 
     private static final String TAG = "ARActivity";
 
@@ -46,12 +50,17 @@ public class ARActivity extends AppCompatActivity {
         hintImageView = findViewById(R.id.hint);
         RoundedBitmapDrawable hintImage = RoundedBitmapDrawableFactory.create(res, BitmapFactory.decodeResource(res, R.drawable.t1));
         hintImageView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            int diameter = hintImageView.getWidth() + 50;
+            int diameter = hintImageView.getWidth();
             Log.i(TAG, String.valueOf(diameter));
-            hintImage.setCornerRadius(diameter / 2.0f);
+            hintImage.setCornerRadius((float) diameter);
             hintImageView.setImageDrawable(hintImage);
         });
 
+        floatingMapButton = findViewById(R.id.map_button);
+        Intent mapIntent = new Intent(this, MapsActivity.class);
+        floatingMapButton.setOnClickListener(view ->{
+                startActivity(mapIntent);
+        });
 
         currentLat = NC_LAT;
         currentLong = NC_LONG;
