@@ -10,6 +10,7 @@ import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.Material;
 import com.google.ar.sceneform.rendering.MaterialFactory;
+import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
 
 import java.util.List;
@@ -22,6 +23,9 @@ public class AugmentedArtNode extends AnchorNode {
 
     private final Wall wall;
     private static List<CompletableFuture<Material>> materialFutures;
+    private static List<Material> materials;
+
+    private int activeImage = 0;
 
     public AugmentedArtNode(Context context, Wall wall) {
         this.wall = wall;
@@ -66,6 +70,19 @@ public class AugmentedArtNode extends AnchorNode {
                         Log.e(TAG, "Exception loading artworks", throwable);
                         return null;
                     });
+        } else {
+            if (materials == null || materials.isEmpty()) {
+                materials = materialFutures.stream()
+                        .map(future -> future.join())
+                        .map(material -> {
+                            material.setFloat(MaterialFactory.MATERIAL_REFLECTANCE, 0.0f);
+                            material.setFloat(MaterialFactory.MATERIAL_ROUGHNESS, 0.8f);
+                            material.setFloat(MaterialFactory.MATERIAL_METALLIC, 0.0f);
+                            return material;
+                        })
+                        .collect(Collectors.toList());
+            }
+            artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
         }
     }
 
