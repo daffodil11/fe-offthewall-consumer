@@ -228,11 +228,13 @@ public class ARActivity extends AppCompatActivity {
                     // Detected but not yet tracked.
                     break;
                 case TRACKING:
+                    // Add node if this is a newly discovered trigger.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
                         AugmentedArtNode node = new AugmentedArtNode(this, closestWall);
                     }
                     break;
                 case STOPPED:
+                    // Drop the trigger from the map if it is no longer being tracked.
                     augmentedImageMap.remove(augmentedImage);
                     break;
             }
