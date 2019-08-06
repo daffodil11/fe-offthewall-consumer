@@ -84,6 +84,13 @@ public class ARActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         augmentedArtFragment = new AugmentedArtFragment();
+        augmentedArtFragment.setOnArReadyListener(new AugmentedArtFragment.ArReadyListener() {
+            @Override
+            public void onArReady() {
+                Log.i(TAG, "Setting frame listener");
+                setFrameListener();
+            }
+        });
 
         getLocationPermission();
 
@@ -187,6 +194,7 @@ public class ARActivity extends AppCompatActivity {
                 bundle.putFloat("triggerWidth", (float) data.trigger_width);
                 augmentedArtFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.placeholder, augmentedArtFragment);
+                // augmentedArtFragment.getArSceneView().getScene().addOnUpdateListener(ARActivity.this::onUpdateFrame);
                 fragmentTransaction.commit();
 
                 String resource = "t" + wall.getWallId();
@@ -208,12 +216,16 @@ public class ARActivity extends AppCompatActivity {
         });
     }
 
+    private void setFrameListener() {
+        augmentedArtFragment.getArSceneView().getScene().addOnUpdateListener(ARActivity.this::onUpdateFrame);
+    }
+
     /**
      * Registered with the Sceneform Scene object, this method is called at the start of each frame.
      *
      * @param frameTime - time since last frame.
      */
-    private void onUpdateFrame(FrameTime frameTime) {
+    public void onUpdateFrame(FrameTime frameTime) {
         Frame frame = augmentedArtFragment.getArSceneView().getArFrame();
 
         if (frame == null) {
@@ -231,6 +243,9 @@ public class ARActivity extends AppCompatActivity {
                     // Add node if this is a newly discovered trigger.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
                         AugmentedArtNode node = new AugmentedArtNode(this, closestWall);
+                        node.setImage(augmentedImage);
+                        augmentedImageMap.put(augmentedImage, node);
+                        augmentedArtFragment.getArSceneView().getScene().addChild(node);
                     }
                     break;
                 case STOPPED:

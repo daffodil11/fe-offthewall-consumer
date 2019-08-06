@@ -25,6 +25,12 @@ import java.io.InputStream;
 
 public class AugmentedArtFragment extends ArFragment {
 
+    public interface ArReadyListener {
+        public void onArReady();
+    }
+
+    private ArReadyListener listener = null;
+
     private static final String TAG = "AugmentedArtFragment";
     private static final double MIN_OPENGL_VERSION = 3.0;
 
@@ -50,6 +56,10 @@ public class AugmentedArtFragment extends ArFragment {
         }
     }
 
+    public void setOnArReadyListener(ArReadyListener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
@@ -61,6 +71,9 @@ public class AugmentedArtFragment extends ArFragment {
         getPlaneDiscoveryController().hide();
         getPlaneDiscoveryController().setInstructionView(null);
         getArSceneView().getPlaneRenderer().setEnabled(false);
+        if (listener != null) {
+            this.listener.onArReady();
+        }
         return view;
     }
 
