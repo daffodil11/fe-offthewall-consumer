@@ -34,6 +34,7 @@ public class AugmentedArtNode extends AnchorNode {
     private Node artNode;
 
     private int activeImage = 0;
+    private Vector3 canvasDims;
     private int dpPerM;
 
     public AugmentedArtNode(Context context) {
@@ -80,7 +81,7 @@ public class AugmentedArtNode extends AnchorNode {
         Quaternion upQuat = Quaternion.lookRotation(planeNormal, Vector3.up());
         artNode.setWorldRotation(upQuat);
 
-        final Vector3 canvasDims = new Vector3(canvasWidth, canvasHeight, 0.0f);
+        canvasDims = new Vector3(canvasWidth, canvasHeight, 0.0f);
 
         if (materialFutures.stream().anyMatch(future -> !future.isDone())) {
             CompletableFuture.allOf(materialFutures.toArray(new CompletableFuture[materialFutures.size()]))
@@ -106,48 +107,14 @@ public class AugmentedArtNode extends AnchorNode {
         }
 
         Node rightButtonNode = new Node();
-        rightButtonNode.setParent(artNode);
-        rightButtonNode.setLocalPosition(rightButtonOffset);
-        ViewRenderable.builder()
-                .setView(this.context, R.layout.button_right)
-                .setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER)
-                .setHorizontalAlignment(ViewRenderable.HorizontalAlignment.CENTER)
-                .build()
-                .thenAccept(
-                        (renderableButton) -> {
-                            renderableButton.setSizer(new DpToMetersViewSizer(dpPerM));
-                            rightButtonNode.setRenderable(renderableButton);
-                            ImageButton button = (ImageButton) renderableButton.getView();
-                            button.setOnClickListener(view -> {
-                                activeImage = ((activeImage + 1) % materials.size() + materials.size()) % materials.size();
-                                artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
-                            });
-                        }
-                );
         Node leftButtonNode = new Node();
-        leftButtonNode.setParent(artNode);
-        leftButtonNode.setLocalPosition(leftButtonOffset);
-        ViewRenderable.builder()
-                .setView(this.context, R.layout.button_left)
-                .setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER)
-                .setHorizontalAlignment(ViewRenderable.HorizontalAlignment.CENTER)
-                .build()
-                .thenAccept(
-                        (renderableButton) -> {
-                            renderableButton.setSizer(new DpToMetersViewSizer(dpPerM));
-                            leftButtonNode.setRenderable(renderableButton);
-                            ImageButton button = (ImageButton) renderableButton.getView();
-                            button.setOnClickListener(view -> {
-                                activeImage = ((activeImage - 1) % materials.size() + materials.size()) % materials.size();
-                                artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
-                            });
-                        }
-                );
+        buildButton(rightButtonNode, rightButtonOffset, R.layout.button_right, 1);
+        buildButton(leftButtonNode, leftButtonOffset, R.layout.button_left, -1);
 
         return true;
     }
 
-    private void buildButton(Node node, Vector3 position, int layout, ImageButton.OnClickListener onClickListener) {
+    private void buildButton(Node node, Vector3 position, int layout, int increment) {
         node.setParent(artNode);
         node.setLocalPosition(position);
         ViewRenderable.builder()
@@ -159,8 +126,11 @@ public class AugmentedArtNode extends AnchorNode {
                         (renderableButton) -> {
                             renderableButton.setSizer(new DpToMetersViewSizer(dpPerM));
                             node.setRenderable(renderableButton);
-                            Button button = (Button) renderableButton.getView();
-                            button.setOnClickListener(onClickListener);
+                            ImageButton button = (ImageButton) renderableButton.getView();
+                            button.setOnClickListener(view -> {
+                                activeImage = ((activeImage + increment) % materials.size() + materials.size()) % materials.size();
+                                artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
+                            });
                         });
     }
 
