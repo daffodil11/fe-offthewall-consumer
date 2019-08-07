@@ -67,6 +67,7 @@ public class ARActivity extends AppCompatActivity {
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_ar);
         res = getResources();
         application = (OffTheWallApplication) getApplication();
@@ -284,5 +285,11 @@ public class ARActivity extends AppCompatActivity {
         protected void onPostExecute(Bitmap[] result) {
             artNode.setArt(result);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
