@@ -18,8 +18,6 @@ public class Wall {
 
     private static final String TAG = "Wall";
 
-    private String[] imgUrls;
-    private List<Art> artworks;
     private String streetAddress;
     private String info;
     private final int wallId;
