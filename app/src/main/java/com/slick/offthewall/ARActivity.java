@@ -10,8 +10,6 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,8 +27,6 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.ar.core.AugmentedImage;
@@ -41,12 +37,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +48,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ARActivity extends AppCompatActivity {
-
-    private static final double NC_LAT = 53.7949778;
-    private static final double NC_LONG = -1.5449472;
 
     private FragmentTransaction fragmentTransaction;
     private AugmentedArtFragment augmentedArtFragment;
@@ -93,13 +84,7 @@ public class ARActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         augmentedArtFragment = new AugmentedArtFragment();
-        augmentedArtFragment.setOnArReadyListener(new AugmentedArtFragment.ArReadyListener() {
-            @Override
-            public void onArReady() {
-                Log.i(TAG, "Setting frame listener");
-                setFrameListener();
-            }
-        });
+        augmentedArtFragment.setOnArReadyListener(() -> setFrameListener());
         artNode = new AugmentedArtNode(this);
 
         getLocationPermission();
@@ -213,7 +198,6 @@ public class ARActivity extends AppCompatActivity {
                 bundle.putFloat("triggerWidth", (float) data.trigger_width);
                 augmentedArtFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.placeholder, augmentedArtFragment);
-                // augmentedArtFragment.getArSceneView().getScene().addOnUpdateListener(ARActivity.this::onUpdateFrame);
                 fragmentTransaction.commit();
 
                 String resource = "t" + wall.getWallId();
@@ -298,8 +282,6 @@ public class ARActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Bitmap[] result) {
-            Log.i(TAG, "Completed DownloadImagesTask");
-            // setFrameListener(ORIGIN_AUGMENTED_ART_NODE);
             artNode.setArt(result);
         }
     }

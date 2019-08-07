@@ -3,8 +3,6 @@ package com.slick.offthewall;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.google.ar.core.AugmentedImage;
