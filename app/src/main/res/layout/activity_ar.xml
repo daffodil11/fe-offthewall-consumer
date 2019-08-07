@@ -7,15 +7,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/loading"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:textSize="48sp"
-            android:background="@color/colorAccent"
-            android:textColor="@color/colorPrimary"/>
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/loadingProgressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:progressDrawable="@drawable/circular_progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/loading"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="48sp"
+                android:background="@color/colorAccent"
+                android:textColor="@color/colorPrimary"/>
+
+        </LinearLayout>
+
     </FrameLayout>
     
     <ImageView
