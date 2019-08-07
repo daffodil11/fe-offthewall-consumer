@@ -194,12 +194,12 @@ public class ARActivity extends AppCompatActivity {
                         (float) data.trigger_offset_x,
                         (float) data.trigger_offset_y
                         );
-                List<Art> artworks = data.images.stream().map(image -> new Art(image.image_url, image.blurb, image.artist_id, new Date(Long.valueOf(image.created_at)))).collect(Collectors.toList());
-                wall.setWallArt(artworks);
+                // List<Art> artworks = data.images.stream().map(image -> new Art(image.image_url, image.blurb, image.artist_id, new Date(Long.valueOf(image.created_at)))).collect(Collectors.toList());
+                //wall.setWallArt(artworks);
 
-                List<URL> urlList = artworks.stream().map(artwork -> {
+                List<URL> urlList = data.images.stream().map(image -> {
                     try {
-                        return new URL(artwork.getUrl());
+                        return new URL(image.image_url);
                     } catch (MalformedURLException e) {
                         Log.e(TAG, "Bad artwork URL", e);
                         return null;

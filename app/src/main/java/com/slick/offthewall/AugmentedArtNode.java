@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
@@ -116,7 +117,7 @@ public class AugmentedArtNode extends AnchorNode {
                         (renderableButton) -> {
                             renderableButton.setSizer(new DpToMetersViewSizer(dpPerM));
                             rightButtonNode.setRenderable(renderableButton);
-                            Button button = (Button) renderableButton.getView();
+                            ImageButton button = (ImageButton) renderableButton.getView();
                             button.setOnClickListener(view -> {
                                 activeImage++;
                                 activeImage %= materials.size();
@@ -125,18 +126,22 @@ public class AugmentedArtNode extends AnchorNode {
                         }
                 );
 
-        /*Node leftButtonNode = new Node();
+        Node leftButtonNode = new Node();
         buildButton(
                 leftButtonNode,
                 leftButtonOffset,
-                "R.layout.button_left goes here once it exists",
-                view -> {}
-        );*/
+                R.layout.button_left,
+                view -> {
+                    activeImage--;
+                    activeImage %= materials.size();
+                    artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
+                }
+        );
 
         return true;
     }
 
-    private void buildButton(Node node, Vector3 position, int layout, Button.OnClickListener onClickListener) {
+    private void buildButton(Node node, Vector3 position, int layout, ImageButton.OnClickListener onClickListener) {
         node.setParent(artNode);
         node.setLocalPosition(position);
         ViewRenderable.builder()

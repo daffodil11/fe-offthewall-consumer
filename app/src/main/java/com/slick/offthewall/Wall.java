@@ -75,9 +75,9 @@ public class Wall {
         this.triggerOffsetY = triggerOffsetY;
     }
 
-    public void setWallArt (List<Art> artworks) {
+    /*public void setWallArt (List<Art> artworks) {
         this.artworks = artworks;
-    }
+    }*/
 
     /*public List<Bitmap> getArtBitmaps () {
         return this.artworks.stream().map(art -> {
