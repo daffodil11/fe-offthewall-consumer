@@ -3,16 +3,19 @@ package com.slick.offthewall;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
+import com.google.ar.sceneform.rendering.DpToMetersViewSizer;
 import com.google.ar.sceneform.rendering.Material;
 import com.google.ar.sceneform.rendering.MaterialFactory;
 import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
+import com.google.ar.sceneform.rendering.ViewRenderable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +29,11 @@ public class AugmentedArtNode extends AnchorNode {
     private Context context;
     private static List<CompletableFuture<Material>> materialFutures = null;
     private static List<Material> materials;
+    private Node artNode;
 
     private int activeImage = 0;
+    private Vector3 canvasDims;
+    private int dpPerM;
 
     public AugmentedArtNode(Context context) {
         this.context = context;
@@ -60,7 +66,11 @@ public class AugmentedArtNode extends AnchorNode {
         setAnchor(image.createAnchor(image.getCenterPose()));
 
         Vector3 localPosition = new Vector3(artLocationX, 0.0f, artLocationY);
-        Node artNode;
+        final Vector3 rightButtonOffset = new Vector3(-(canvasWidth / 2.0f), 0.0f, -0.15f);
+        final Vector3 leftButtonOffset = new Vector3((canvasWidth / 2.0f), 0.0f, -0.15f);
+
+        dpPerM = (int) Math.floor(250 / canvasWidth);
+
         artNode = new Node();
         artNode.setParent(this);
         artNode.setLocalPosition(localPosition);
@@ -69,7 +79,7 @@ public class AugmentedArtNode extends AnchorNode {
         Quaternion upQuat = Quaternion.lookRotation(planeNormal, Vector3.up());
         artNode.setWorldRotation(upQuat);
 
-        final Vector3 canvasDims = new Vector3(canvasWidth, canvasHeight, 0.0f);
+        canvasDims = new Vector3(canvasWidth, canvasHeight, 0.0f);
 
         if (materialFutures.stream().anyMatch(future -> !future.isDone())) {
             CompletableFuture.allOf(materialFutures.toArray(new CompletableFuture[materialFutures.size()]))
@@ -93,7 +103,33 @@ public class AugmentedArtNode extends AnchorNode {
             }
             artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
         }
+
+        Node rightButtonNode = new Node();
+        Node leftButtonNode = new Node();
+        buildButton(rightButtonNode, rightButtonOffset, R.layout.button_right, 1);
+        buildButton(leftButtonNode, leftButtonOffset, R.layout.button_left, -1);
+
         return true;
+    }
+
+    private void buildButton(Node node, Vector3 position, int layout, int increment) {
+        node.setParent(artNode);
+        node.setLocalPosition(position);
+        ViewRenderable.builder()
+                .setView(this.context, layout)
+                .setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER)
+                .setHorizontalAlignment(ViewRenderable.HorizontalAlignment.CENTER)
+                .build()
+                .thenAccept(
+                        (renderableButton) -> {
+                            renderableButton.setSizer(new DpToMetersViewSizer(dpPerM));
+                            node.setRenderable(renderableButton);
+                            ImageButton button = (ImageButton) renderableButton.getView();
+                            button.setOnClickListener(view -> {
+                                activeImage = ((activeImage + increment) % materials.size() + materials.size()) % materials.size();
+                                artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
+                            });
+                        });
     }
 
 }

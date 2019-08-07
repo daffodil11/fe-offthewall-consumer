@@ -187,4 +187,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onMapClick(LatLng latLng) {
         floatingCameraButton.show();
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 }
