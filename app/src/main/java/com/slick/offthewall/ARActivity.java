@@ -199,6 +199,7 @@ public class ARActivity extends AppCompatActivity {
 
                 List<URL> urlList = data.images.stream().map(image -> {
                     try {
+                        Log.i(TAG, image.image_url);
                         return new URL(image.image_url);
                     } catch (MalformedURLException e) {
                         Log.e(TAG, "Bad artwork URL", e);
