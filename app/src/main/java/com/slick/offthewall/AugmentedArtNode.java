@@ -119,24 +119,13 @@ public class AugmentedArtNode extends AnchorNode {
                             rightButtonNode.setRenderable(renderableButton);
                             ImageButton button = (ImageButton) renderableButton.getView();
                             button.setOnClickListener(view -> {
-                                activeImage++;
-                                activeImage %= materials.size();
+                                activeImage = ((activeImage - 1) % materials.size() + materials.size()) % materials.size();
                                 artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
                             });
                         }
                 );
 
-        Node leftButtonNode = new Node();
-        buildButton(
-                leftButtonNode,
-                leftButtonOffset,
-                R.layout.button_left,
-                view -> {
-                    activeImage--;
-                    activeImage %= materials.size();
-                    artNode.setRenderable(ShapeFactory.makeCube(canvasDims, new Vector3(), materials.get(activeImage)));
-                }
-        );
+
 
         return true;
     }
