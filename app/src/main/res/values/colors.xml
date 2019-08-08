@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#FFCF35</color>
     <color name="colorAccent">#173B53</color>
     <color name="colorPop">#79C9C9</color>
-    <color name="colorMuted">#F4DD9B</color>
+    <color name="colorMuted">#FFFFFF</color>
     <color name="colorLogo">#FFA7B1</color>
     <color name="transparent">#00FFFFFF</color>
 </resources>
