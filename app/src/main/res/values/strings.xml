@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">Off The Wall</string>
+    <string name="app_name">ARt: Leeds</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_AR">AR</string>
+    <string name="tab_text_1"></string>
+    <string name="tab_text_2"></string>
+    <string name="tab_text_3"></string>
+    <string name="loading">Loading...</string>
 </resources>
