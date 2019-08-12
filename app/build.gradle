@@ -21,12 +21,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', "mapsApiKey", OffTheWall_mapsAPIkey
-            resValue 'string', "maps_api_key", OffTheWall_mapsAPIkey
         }
         debug {
-            buildConfigField 'String', "mapsApiKey", OffTheWall_mapsAPIkey
-            resValue 'string', "maps_api_key", OffTheWall_mapsAPIkey
         }
     }
     compileOptions {
