@@ -93,7 +93,6 @@ public class AugmentedArtNode extends AnchorNode {
                 materials = materialFutures.stream()
                         .map(future -> future.join())
                         .map(material -> {
-                            Log.i(TAG, "Successfully made materials!");
                             material.setFloat(MaterialFactory.MATERIAL_REFLECTANCE, 0.0f);
                             material.setFloat(MaterialFactory.MATERIAL_ROUGHNESS, 0.8f);
                             material.setFloat(MaterialFactory.MATERIAL_METALLIC, 0.0f);
