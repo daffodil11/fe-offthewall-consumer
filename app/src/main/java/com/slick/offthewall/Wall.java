@@ -29,6 +29,8 @@ public class Wall {
     private float canvasHeight;
     private final double latitude;
     private final double longitude;
+    private List<String> artistSignatures;
+    private List<String> blurbs;
 
     private static final int EARTH_RADIUS = 6371000;
 
@@ -95,5 +97,17 @@ public class Wall {
 
     public float getCanvasHeight() {
         return this.canvasHeight;
+    }
+
+    public void setArtistSignatures(List<String> signatures) {
+        this.artistSignatures = signatures;
+    }
+
+    public void setArtBlurbs(List<String> blurbs) {
+        this.blurbs = blurbs;
+    }
+
+    public String getArtInfo(int i) {
+        return this.blurbs.get(i) + ", by " + this.artistSignatures.get(i);
     }
 }

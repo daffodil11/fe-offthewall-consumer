@@ -3,10 +3,13 @@ package com.slick.offthewall;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
@@ -34,6 +37,7 @@ public class AugmentedArtNode extends AnchorNode {
     private int activeImage = 0;
     private Vector3 canvasDims;
     private int dpPerM;
+    private Wall wall;
 
     public AugmentedArtNode(Context context) {
         this.context = context;
@@ -50,6 +54,7 @@ public class AugmentedArtNode extends AnchorNode {
     }
 
     public boolean setImage(AugmentedImage image, Wall wall) {
+        this.wall = wall;
         if (materialFutures == null) {
             return false;
         }
@@ -78,6 +83,10 @@ public class AugmentedArtNode extends AnchorNode {
         Vector3 planeNormal = new Vector3(yAxis[0], yAxis[1], yAxis[2]);
         Quaternion upQuat = Quaternion.lookRotation(planeNormal, Vector3.up());
         artNode.setWorldRotation(upQuat);
+
+        this.setOnTapListener((hitTestResult, motionEvent) -> {
+            Toast.makeText(this.context, wall.getArtInfo(activeImage), Toast.LENGTH_LONG).show();
+        });
 
         canvasDims = new Vector3(canvasWidth, canvasHeight, 0.0f);
 

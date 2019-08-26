@@ -192,6 +192,9 @@ public class ARActivity extends AppCompatActivity {
                 URL[] urls = urlList.toArray(new URL[urlList.size()]);
                 new DownloadImagesTask().execute(urls);
 
+                wall.setArtBlurbs(data.images.stream().map(image -> image.blurb).collect(Collectors.toList()));
+                wall.setArtistSignatures(data.images.stream().map(image -> application.getApprovedArtistById(image.artist_id)).collect(Collectors.toList()));
+
                 closestWall = wall;
                 Bundle bundle = new Bundle();
                 bundle.putInt("triggerId", Integer.valueOf(data.wall_id));
