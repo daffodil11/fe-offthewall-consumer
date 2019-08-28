@@ -183,7 +183,6 @@ public class ARActivity extends AppCompatActivity {
 
                 List<URL> urlList = data.images.stream().map(image -> {
                     try {
-                        Log.i(TAG, image.image_url);
                         return new URL(image.image_url);
                     } catch (MalformedURLException e) {
                         Log.e(TAG, "Bad artwork URL", e);
@@ -192,6 +191,9 @@ public class ARActivity extends AppCompatActivity {
                 }).collect(Collectors.toList());
                 URL[] urls = urlList.toArray(new URL[urlList.size()]);
                 new DownloadImagesTask().execute(urls);
+
+                wall.setArtBlurbs(data.images.stream().map(image -> image.blurb).collect(Collectors.toList()));
+                wall.setArtistSignatures(data.images.stream().map(image -> application.getApprovedArtistById(image.artist_id)).collect(Collectors.toList()));
 
                 closestWall = wall;
                 Bundle bundle = new Bundle();
@@ -206,7 +208,6 @@ public class ARActivity extends AppCompatActivity {
                 RoundedBitmapDrawable hintImage = RoundedBitmapDrawableFactory.create(res, BitmapFactory.decodeResource(res, id));
                 hintImageView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
                     int diameter = hintImageView.getWidth();
-                    Log.i(TAG, String.valueOf(diameter));
                     hintImage.setCornerRadius((float) diameter);
                     hintImageView.setImageDrawable(hintImage);
                     hintImageView.setVisibility(ImageView.VISIBLE);
