@@ -18,8 +18,8 @@ public class OffTheWallApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        APPROVED_ARTISTS.put(1, "bobbirae");
-        APPROVED_ARTISTS.put(2, "mikitillett");
+        APPROVED_ARTISTS.put(1, "Bobbi Rae");
+        APPROVED_ARTISTS.put(2, "Miki Tillett");
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
         apolloClient = ApolloClient.builder()
